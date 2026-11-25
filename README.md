@@ -11,7 +11,21 @@ npm run build     # gera o site em dist/
 npm run preview   # serve o dist/
 ```
 
-Requer Node 22. Hospedagem: qualquer serviço de site estático (Netlify, Vercel, Cloudflare Pages, S3) servindo a pasta `dist/`.
+Requer Node 22.
+
+## Publicar
+
+Site no ar: https://evertonboing13.github.io/terrari-site/
+
+```bash
+npm run deploy    # compila e envia o dist/ para a branch gh-pages (GitHub Pages)
+```
+
+Depois de editar, faça commit/push do código na `main` e rode `npm run deploy`. O GitHub leva cerca de 1 minuto para atualizar.
+
+Para publicar automaticamente a cada push (GitHub Actions), o workflow está pronto em `../_bkp/deploy.yml`: rode `gh auth refresh -h github.com -s workflow`, copie o arquivo para `.github/workflows/deploy.yml`, faça push e em Settings > Pages troque a fonte para "GitHub Actions".
+
+Domínio próprio: em `astro.config.mjs` troque `site` pelo domínio e remova `base`; atualize `SITE.url` em `src/config.ts` e `public/robots.txt`; crie `public/CNAME` com o domínio e aponte o DNS para o GitHub Pages.
 
 ## Onde editar
 
