@@ -1,0 +1,49 @@
+{
+  "nome": "Residencial Atenna",
+  "ordem": 6,
+  "fase": "entregue",
+  "local": {
+    "bairro": null,
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": null,
+    "referencias": []
+  },
+  "ficha": {
+    "area": null,
+    "tipologia": null,
+    "unidades": null,
+    "entrega": "Nov/2024",
+    "registro": null
+  },
+  "conceito": null,
+  "apresentacao": [],
+  "capa": {
+    "src": "../../assets/empreendimentos/residencial-atenna/fachada.jpg",
+    "alt": "Fachada do Residencial Atenna, sobrados com revestimento em pedra e aço corten"
+  },
+  "galeria": [
+    {
+      "src": "../../assets/empreendimentos/residencial-atenna/living.jpg",
+      "alt": "Living com escada metálica preta e porta para o quintal"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-atenna/living-2.jpg",
+      "alt": "Living integrado visto da entrada, com escada metálica"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-atenna/suite.jpg",
+      "alt": "Suíte com piso amadeirado, porta de vidro para a sacada e banheiro"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-atenna/quarto.jpg",
+      "alt": "Dormitório com piso amadeirado"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-atenna/fachada-fundos.jpg",
+      "alt": "Fachada dos fundos com área externa e porta de vidro"
+    }
+  ],
+  "mapa": null,
+  "obra": null
+}

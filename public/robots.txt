@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://evertonboing13.github.io/terrari-site/sitemap-index.xml

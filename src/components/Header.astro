@@ -1,0 +1,67 @@
+---
+import { TABELA_PRO_URL, u } from '../config';
+const path = Astro.url.pathname;
+const links = [
+  { href: u('/'), label: 'Home' },
+  { href: u('/a-terrari'), label: 'A Terrari' },
+  { href: u('/empreendimentos'), label: 'Empreendimentos' },
+  { href: u('/#contato'), label: 'Contato' },
+];
+const semBarra = (p: string) => p.replace(/\/$/, '');
+const atual = (href: string) =>
+  href === u('/') ? semBarra(path) === semBarra(u('/')) : !href.includes('#') && path.startsWith(href);
+---
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a href={u('/')} class="logo" aria-label="Terrari Empreendimentos, página inicial">TERRARI<span>EMPREENDIMENTOS</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-principal">
+      <span class="sr-only">Abrir menu</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <nav id="nav-principal" aria-label="Principal" class="nav">
+      {links.map((l) => (
+        <a href={l.href} aria-current={atual(l.href) ? 'page' : undefined}>{l.label}</a>
+      ))}
+      <a href={TABELA_PRO_URL ?? '#corretores'} target={TABELA_PRO_URL ? '_blank' : undefined} rel="noopener" class="nav-corretor">Área do corretor ↗</a>
+      <a href={u('/#contato')} class="btn btn-acento nav-cta">Fale com a Terrari</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+  const nav = document.getElementById('nav-principal');
+  btn?.addEventListener('click', () => {
+    const aberto = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!aberto));
+    nav?.classList.toggle('aberto', !aberto);
+  });
+  nav?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) {
+      btn?.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('aberto');
+    }
+  });
+</script>
+
+<style>
+  .hdr { background: var(--tinta); color: #fff; border-bottom: 1px solid var(--linha-escura); position: relative; z-index: 10; }
+  .hdr-in { padding-top: 18px; padding-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
+  .logo { font-family: var(--titulo); font-size: 24px; font-weight: 700; letter-spacing: 0.08em; color: #fff; text-decoration: none; padding: 8px 0; line-height: 1.2; }
+  .logo span { display: block; font-family: var(--corpo); font-size: 10px; font-weight: 500; letter-spacing: 0.22em; color: var(--texto-claro); }
+  .logo:hover { color: #fff; }
+  .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; font-size: 15px; font-weight: 500; }
+  .nav a:not(.btn) { color: #fff; text-decoration: none; padding: 12px 0; border-bottom: 2px solid transparent; }
+  .nav a:not(.btn):hover, .nav a[aria-current='page'] { border-bottom-color: var(--terracota); }
+  .nav .nav-corretor { color: var(--acento-claro); }
+  .nav-cta { min-height: 44px; padding: 13px 22px; font-size: 15px; }
+  .menu-btn { display: none; background: none; border: 0; color: #fff; width: 48px; height: 48px; cursor: pointer; align-items: center; justify-content: center; }
+
+  @media (max-width: 1000px) {
+    .menu-btn { display: inline-flex; }
+    .nav { display: none; flex-basis: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 8px; }
+    .nav.aberto { display: flex; }
+    .nav a:not(.btn) { padding: 14px 0; border-bottom: 1px solid var(--linha-escura); }
+    .nav-cta { margin-top: 16px; }
+  }
+</style>

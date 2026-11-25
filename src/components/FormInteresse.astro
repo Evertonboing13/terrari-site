@@ -1,0 +1,91 @@
+---
+import { FORM_ENDPOINT, TABELA_PRO_URL, CONTATO, u } from '../config';
+interface Props { empreendimento: string }
+const { empreendimento } = Astro.props;
+---
+<form class="form" data-form data-endpoint={FORM_ENDPOINT ?? ''} data-whatsapp={CONTATO.whatsapp ?? ''} novalidate>
+  <input type="hidden" name="empreendimento" value={empreendimento} />
+  <label>Nome<input type="text" name="nome" autocomplete="name" required /></label>
+  <label>WhatsApp<input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(47) 90000-0000" required /></label>
+  <label>E-mail<input type="email" name="email" autocomplete="email" required /></label>
+  <label>Objetivo
+    <select name="objetivo" data-objetivo>
+      <option>Quero morar</option>
+      <option>Quero investir</option>
+      <option>Quero agendar uma visita</option>
+      <option>Sou corretor</option>
+    </select>
+  </label>
+  <p class="aviso-corretor" data-corretor hidden>
+    Corretor parceiro: tabelas e disponibilidade estão no <a href={TABELA_PRO_URL ?? '#corretores'} target={TABELA_PRO_URL ? '_blank' : undefined} rel="noopener">Tabela Pro ↗</a>.
+  </p>
+  <label class="consent"><input type="checkbox" name="consentimento" required /> <span>Concordo com o uso dos meus dados para contato sobre este empreendimento, conforme a <a href={u('/politica-de-privacidade')}>Política de privacidade</a>.</span></label>
+  <button type="submit" class="btn btn-tinta">Quero receber informações</button>
+  <p class="msg" data-msg role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
+    const sel = form.querySelector<HTMLSelectElement>('[data-objetivo]')!;
+    const aviso = form.querySelector<HTMLElement>('[data-corretor]')!;
+    const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+    sel.addEventListener('change', () => (aviso.hidden = sel.value !== 'Sou corretor'));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        msg.textContent = 'Preencha nome, WhatsApp, e-mail e aceite a política de privacidade.';
+        msg.className = 'msg erro';
+        form.querySelector<HTMLElement>(':invalid')?.focus();
+        return;
+      }
+      const dados = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      const endpoint = form.dataset.endpoint;
+      if (endpoint) {
+        try {
+          const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(dados),
+          });
+          if (!r.ok) throw new Error(String(r.status));
+          form.reset();
+          aviso.hidden = true;
+          msg.textContent = 'Recebemos seu contato. Nosso time retorna em breve.';
+          msg.className = 'msg ok';
+        } catch {
+          msg.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+          msg.className = 'msg erro';
+        }
+        return;
+      }
+      const wa = form.dataset.whatsapp;
+      const texto = `Olá! Tenho interesse no ${dados.empreendimento}.\nNome: ${dados.nome}\nWhatsApp: ${dados.whatsapp}\nE-mail: ${dados.email}\nObjetivo: ${dados.objetivo}`;
+      if (wa) {
+        window.open(`https://wa.me/${wa}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+        msg.textContent = 'Abrimos o WhatsApp com sua mensagem. É só enviar.';
+        msg.className = 'msg ok';
+      } else {
+        msg.textContent = 'Formulário em configuração: destino do envio ainda não definido.';
+        msg.className = 'msg erro';
+      }
+    });
+  });
+</script>
+
+<style>
+  .form { flex: 1 1 460px; min-width: 0; background: var(--superficie); padding: 40px; display: flex; flex-direction: column; gap: 20px; }
+  label { display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 600; }
+  input:not([type='checkbox']), select { font: 400 16px var(--corpo); padding: 14px; min-height: 48px; border: 1px solid var(--borda-input); border-radius: var(--raio); background: #fff; color: var(--ink); }
+  input:focus-visible, select:focus-visible { outline: 3px solid var(--acento); outline-offset: 0; border-color: var(--tinta); }
+  .consent { flex-direction: row; align-items: flex-start; gap: 12px; font-weight: 400; font-size: 14px; line-height: 1.5; color: var(--texto-2); }
+  .consent input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; accent-color: var(--tinta); }
+  .aviso-corretor { font-size: 14px; line-height: 1.5; background: var(--fundo); padding: 12px 14px; border-left: 3px solid var(--terracota); }
+  .aviso-corretor a { font-weight: 600; }
+  button { font-size: 16px; padding: 18px; width: 100%; }
+  .msg:empty { display: none; }
+  .msg { font-size: 14px; line-height: 1.5; }
+  .msg.ok { color: var(--verde); }
+  .msg.erro { color: #A3341F; }
+  @media (max-width: 640px) { .form { padding: 24px; } }
+</style>

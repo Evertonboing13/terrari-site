@@ -1,0 +1,28 @@
+---
+// Barra de andamento da obra (percentual concluído).
+interface Props { percentual: number; escuro?: boolean; compacto?: boolean }
+const { percentual, escuro = false, compacto = false } = Astro.props;
+---
+<div class:list={['andamento', { escuro, compacto }]}>
+  <div class="andamento-topo">
+    <span>Andamento da obra</span>
+    <strong>{percentual}%</strong>
+  </div>
+  <div class="barra" role="progressbar" aria-valuenow={percentual} aria-valuemin="0" aria-valuemax="100" aria-label={`Obra ${percentual}% concluída`}>
+    <span style={`width: ${percentual}%`}></span>
+  </div>
+</div>
+
+<style>
+  .andamento { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .andamento-topo { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--texto-2); }
+  .andamento-topo strong { font-family: var(--titulo); font-size: 20px; font-weight: 600; color: var(--ink); }
+  .compacto .andamento-topo strong { font-size: 16px; }
+  .barra { height: 8px; background: var(--linha); overflow: hidden; }
+  .compacto .barra { height: 6px; }
+  .barra span { display: block; height: 100%; background: var(--verde); }
+  .escuro .andamento-topo { color: var(--texto-claro); }
+  .escuro .andamento-topo strong { color: #fff; }
+  .escuro .barra { background: var(--linha-escura); }
+  .escuro .barra span { background: var(--acento); }
+</style>

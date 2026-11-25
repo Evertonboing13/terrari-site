@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFlutuante from '../components/WhatsAppFlutuante.astro';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { SITE, CONTATO, u } from '../config';
+import capaPadrao from '../assets/empreendimentos/terrari-one/fachada-tarde.jpg';
+
+interface Props {
+  titulo: string;
+  descricao?: string;
+  imagem?: ImageMetadata;
+  jsonLd?: Record<string, unknown>;
+  /** Mensagem pré-preenchida do botão flutuante de WhatsApp. */
+  waMensagem?: string;
+  bodyClass?: string;
+}
+const { titulo, descricao = SITE.descricao, imagem = capaPadrao, jsonLd, waMensagem, bodyClass } = Astro.props;
+const tituloCompleto = titulo === SITE.nome ? titulo : `${titulo} · ${SITE.nome}`;
+const og = await getImage({ src: imagem, width: 1200, format: 'jpg' });
+const base = Astro.site ?? new URL(SITE.url);
+const ogUrl = new URL(og.src, base).href;
+const canonical = new URL(Astro.url.pathname, base).href;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.nome,
+  url: SITE.url,
+  ...(CONTATO.email && { email: CONTATO.email }),
+  ...(CONTATO.telefone && { telephone: CONTATO.telefone }),
+  sameAs: [CONTATO.instagram, CONTATO.facebook, CONTATO.youtube].filter(Boolean),
+};
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={SITE.nome} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0F2A22" />
+    <link rel="icon" href={u('/favicon-48.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={u('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={u('/sitemap-index.xml')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json" set:html={JSON.stringify(org)} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class={bodyClass}>
+    <a href="#conteudo" class="sr-only">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppFlutuante mensagem={waMensagem} />
+  </body>
+</html>

@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import Pend from './Pend.astro';
+import Andamento from './Andamento.astro';
+import { faseLabel, localTexto, urlEmp, rotuloEntrega, type Emp } from '../lib/empreendimentos';
+
+interface Props {
+  emp: Emp;
+  /** "compacto" = Home (3 colunas); "completo" = listagem (2 colunas, com registro). */
+  variante?: 'compacto' | 'completo';
+}
+const { emp, variante = 'compacto' } = Astro.props;
+const d = emp.data;
+const fase = faseLabel(emp);
+const local = localTexto(emp);
+const completo = variante === 'completo';
+const Titulo = completo ? 'h2' : 'h3';
+const entregue = d.fase === 'entregue';
+const emObras = d.fase === 'em-obras' && d.obra != null;
+---
+<a href={urlEmp(emp)} class:list={['card', variante]} data-fase={d.fase ?? 'pendente'}>
+  <div class="card-img">
+    <Image
+      src={d.capa.src}
+      alt={d.capa.alt}
+      widths={completo ? [640, 960, 1280] : [480, 720, 960]}
+      sizes={completo ? '(max-width: 1100px) 100vw, 620px' : '(max-width: 760px) 100vw, (max-width: 1150px) 50vw, 400px'}
+      class="img-cover"
+      loading="lazy"
+    />
+    <span class="selo"><Pend valor={fase} label="STATUS" /></span>
+  </div>
+  <div class="card-corpo">
+    {completo ? (
+      <>
+        <div class="card-topo">
+          <Titulo class="card-nome">{d.nome}</Titulo>
+          <p class="muted fs14"><Pend valor={local.bairro} label="BAIRRO" /> · <Pend valor={local.cidade} label="CIDADE/UF" /></p>
+        </div>
+        <div class="card-ficha">
+          <span><strong><Pend valor={d.ficha.area} label="XX a XX m²" /></strong>Área privativa</span>
+          <span><strong><Pend valor={d.ficha.tipologia} label="X dorm." /></strong>Tipologia</span>
+          <span><strong><Pend valor={d.ficha.entrega} label="MÊS/ANO" /></strong>{rotuloEntrega(emp)}</span>
+          {!entregue && <span><strong><Pend valor={d.ficha.registro} label="R.I. Nº" /></strong>Registro de incorporação</span>}
+        </div>
+        {emObras && <Andamento percentual={d.obra!} compacto />}
+        <span class="card-link">Ver empreendimento →</span>
+      </>
+    ) : (
+      <>
+        <Titulo class="card-nome">{d.nome}</Titulo>
+        <p class="muted fs14"><Pend valor={local.bairro} label="BAIRRO" /> · <Pend valor={local.cidade} label="CIDADE/UF" /></p>
+        <p class="muted fs14 card-linha">
+          <Pend valor={d.ficha.area} label="XX a XX m²" /> · <Pend valor={d.ficha.tipologia} label="X dorm." /> · {entregue ? 'Entregue em' : 'Entrega'} <Pend valor={d.ficha.entrega} label="MÊS/ANO" />
+        </p>
+        {emObras && <Andamento percentual={d.obra!} compacto />}
+      </>
+    )}
+  </div>
+</a>
+
+<style>
+  .card { flex: 1 1 340px; min-width: 0; max-width: 100%; background: var(--superficie); text-decoration: none; color: var(--ink); display: flex; flex-direction: column; }
+  .card.completo { flex-basis: 520px; }
+  .card:hover { color: var(--ink); }
+  .card-img { position: relative; height: 300px; overflow: hidden; background: var(--placeholder); }
+  .completo .card-img { height: 380px; }
+  .card-img :global(img) { transition: transform 0.5s ease; }
+  .card:hover .card-img :global(img) { transform: scale(1.03); }
+  .card-corpo { padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .completo .card-corpo { padding: 28px; gap: 16px; }
+  .card-nome { font-size: 24px; }
+  .completo .card-nome { font-size: 30px; }
+  .fs14 { font-size: 14px; }
+  .card-linha { border-top: 1px solid var(--linha); padding-top: 12px; margin-top: 8px; }
+  .card-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .card-ficha { display: flex; flex-wrap: wrap; gap: 12px 32px; border-top: 1px solid var(--linha); padding-top: 16px; font-size: 14px; color: var(--texto-2); }
+  .card-ficha strong { display: block; color: var(--ink); font-size: 16px; font-weight: 600; }
+  .card-link { font-weight: 600; font-size: 16px; color: var(--verde); }
+  .card:hover .card-link { text-decoration: underline; }
+  @media (max-width: 640px) { .card-img, .completo .card-img { height: 240px; } }
+</style>

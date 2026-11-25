@@ -1,0 +1,28 @@
+{
+  "nome": "Terrarium",
+  "ordem": 2,
+  "fase": "lancamento",
+  "local": {
+    "bairro": null,
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": null,
+    "referencias": []
+  },
+  "ficha": {
+    "area": null,
+    "tipologia": null,
+    "unidades": null,
+    "entrega": "Nov/2029",
+    "registro": null
+  },
+  "conceito": null,
+  "apresentacao": [],
+  "capa": {
+    "src": "../../assets/empreendimentos/terrarium/fachada.jpg",
+    "alt": "Fachada do Terrarium, edifício residencial de sete pavimentos com sacadas envidraçadas"
+  },
+  "galeria": [],
+  "mapa": null,
+  "obra": null
+}

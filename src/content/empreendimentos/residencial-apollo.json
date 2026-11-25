@@ -1,0 +1,45 @@
+{
+  "nome": "Residencial Apollo",
+  "ordem": 5,
+  "fase": "entregue",
+  "local": {
+    "bairro": null,
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": null,
+    "referencias": []
+  },
+  "ficha": {
+    "area": null,
+    "tipologia": null,
+    "unidades": null,
+    "entrega": "Nov/2025",
+    "registro": null
+  },
+  "conceito": null,
+  "apresentacao": [],
+  "capa": {
+    "src": "../../assets/empreendimentos/residencial-apollo/fachada.jpg",
+    "alt": "Fachada do Residencial Apollo, sobrados com revestimento terracota e portões metálicos"
+  },
+  "galeria": [
+    {
+      "src": "../../assets/empreendimentos/residencial-apollo/fachada-fundos.jpg",
+      "alt": "Fachada dos fundos dos sobrados com quintais"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-apollo/living.jpg",
+      "alt": "Sala com escada metálica de degraus em concreto"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-apollo/quarto.jpg",
+      "alt": "Dormitório com piso amadeirado"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-apollo/lavabo-externo.jpg",
+      "alt": "Porta de vidro de acesso ao quintal e lavabo"
+    }
+  ],
+  "mapa": null,
+  "obra": null
+}

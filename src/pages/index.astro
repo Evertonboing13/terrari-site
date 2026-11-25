@@ -1,0 +1,209 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import CardEmpreendimento from '../components/CardEmpreendimento.astro';
+import FaixaCorretor from '../components/FaixaCorretor.astro';
+import Pend from '../components/Pend.astro';
+import { listarEmpreendimentos, faseLabel, localTexto, urlEmp } from '../lib/empreendimentos';
+import { NUMEROS, CONTATO, whatsappLink, u } from '../config';
+import living from '../assets/empreendimentos/terrari-one/living.jpg';
+
+const emps = await listarEmpreendimentos();
+const total = String(emps.length).padStart(2, '0');
+const pilares = [
+  ['Espaços bem planejados', 'Plantas modernas e funcionais, pensadas para o dia a dia de quem mora.'],
+  ['Qualidade em cada etapa', 'Compromisso com a excelência do projeto à entrega das chaves.'],
+  ['Valorização do patrimônio', 'Imóveis que unem qualidade de vida e potencial de valorização.'],
+];
+---
+<Base titulo="Terrari Empreendimentos">
+  <section class="bg-tinta">
+    <div class="wrap hero">
+      <div class="hero-txt">
+        <p class="rotulo">Terrari Empreendimentos</p>
+        <h1>Construindo o futuro com inteligência e qualidade.</h1>
+        <p class="hero-sub">Empreendimentos modernos, espaços bem planejados e oportunidades para viver e investir.</p>
+        <div class="btns">
+          <a href={u('/empreendimentos')} class="btn btn-acento">Conheça os empreendimentos</a>
+          <a href={u('/a-terrari')} class="btn btn-ghost">Conheça a Terrari</a>
+        </div>
+      </div>
+      <div class="hero-midia" data-carrossel>
+        <div class="hero-img">
+          {emps.map((e, i) => (
+            <a href={urlEmp(e)} class:list={['slide', { ativo: i === 0 }]} aria-hidden={i !== 0 ? 'true' : undefined} tabindex={i !== 0 ? -1 : undefined}>
+              <Image src={e.data.capa.src} alt={e.data.capa.alt} widths={[640, 960, 1280]} sizes="(max-width: 1000px) 100vw, 600px" class="img-cover" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+            </a>
+          ))}
+        </div>
+        <div class="hero-legenda">
+          <div class="legendas" aria-live="polite">
+            {emps.map((e, i) => {
+              const l = localTexto(e);
+              return (
+                <span class:list={['legenda', { ativo: i === 0 }]}>
+                  <strong>{e.data.nome}</strong> · <Pend valor={faseLabel(e)} label="STATUS" /> · <Pend valor={l.bairro && l.cidade ? `${l.bairro}, ${l.cidade}` : null} label="BAIRRO, CIDADE" />
+                </span>
+              );
+            })}
+          </div>
+          <div class="ctrl">
+            <button type="button" data-prev aria-label="Empreendimento anterior">←</button>
+            <span class="contador"><span data-atual>01</span> / {total}</span>
+            <button type="button" data-next aria-label="Próximo empreendimento">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-branco numeros-sec">
+    <div class="wrap numeros">
+      <div><p class="num">Desde <Pend valor={NUMEROS.anoFundacao} label="ANO" /></p><p class="num-l">de atuação no mercado imobiliário</p></div>
+      <div><p class="num">{emps.length}</p><p class="num-l">empreendimentos no portfólio</p></div>
+      <div><p class="num"><Pend valor={NUMEROS.m2Construidos} label="XX.XXX" /> m²</p><p class="num-l">construídos em <Pend valor={NUMEROS.cidadeM2} label="CIDADE" /></p></div>
+      <div><p class="num"><Pend valor={NUMEROS.unidadesEntregues} label="XXX" /></p><p class="num-l">unidades entregues</p></div>
+    </div>
+  </section>
+
+  <section id="empreendimentos" class="wrap sec">
+    <div class="sec-topo">
+      <div class="col gap12">
+        <p class="rotulo">Portfólio</p>
+        <h2 class="h-sec">Encontre o seu Terrari</h2>
+      </div>
+      <a href={u('/empreendimentos')} class="link-seta">Ver portfólio completo →</a>
+    </div>
+    <div class="grade">
+      {emps.map((e) => <CardEmpreendimento emp={e} />)}
+    </div>
+  </section>
+
+  <section class="bg-branco">
+    <div class="wrap sec duas">
+      <div class="duas-img"><Image src={living} alt="Living integrado do Terrari One com cozinha, mesa de jantar e painel de TV" widths={[640, 960, 1200]} sizes="(max-width: 1000px) 100vw, 600px" class="img-cover" /></div>
+      <div class="duas-txt">
+        <p class="rotulo">Morar e investir</p>
+        <h2 class="h-sec">Soluções inteligentes para quem vai viver e para quem vai investir.</h2>
+        <div class="pilares">
+          {pilares.map(([t, d], i) => (
+            <div class="pilar">
+              <span class="pilar-n">{String(i + 1).padStart(2, '0')}</span>
+              <div><h3>{t}</h3><p>{d}</p></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec duas">
+    <div class="duas-txt gap24">
+      <p class="rotulo">A Terrari</p>
+      <h2 class="h-sec">Compromisso, transparência e valorização.</h2>
+      <p class="txt-grande">Desenvolvemos empreendimentos imobiliários modernos, funcionais e de qualidade, oferecendo soluções inteligentes para morar e investir, com compromisso, transparência e valorização do patrimônio de nossos clientes.</p>
+      <a href={u('/a-terrari')} class="link-seta">Missão, visão e valores →</a>
+    </div>
+    <div class="ph foto-inst">[FOTO DA EQUIPE OU DA SEDE DA TERRARI]</div>
+  </section>
+
+  <FaixaCorretor />
+
+  <section id="contato" class="bg-branco">
+    <div class="wrap sec contato">
+      <h2>Vamos encontrar o Terrari certo para você?</h2>
+      <p class="lead">Fale com nosso time e receba as informações do empreendimento que combina com o seu momento.</p>
+      <a href={whatsappLink('Olá! Gostaria de saber mais sobre os empreendimentos Terrari.')} target={CONTATO.whatsapp ? '_blank' : undefined} rel="noopener" class="btn btn-tinta btn-lg">Falar pelo WhatsApp</a>
+      {!CONTATO.whatsapp && <p class="muted"><span class="pend">[NÚMERO DO WHATSAPP PENDENTE]</span></p>}
+    </div>
+  </section>
+</Base>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-carrossel]');
+  if (root) {
+    const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
+    const legendas = [...root.querySelectorAll<HTMLElement>('.legenda')];
+    const atual = root.querySelector('[data-atual]')!;
+    let i = 0;
+    let timer: number | undefined;
+    const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ir = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => {
+        s.classList.toggle('ativo', k === i);
+        s.toggleAttribute('aria-hidden', k !== i);
+        s.tabIndex = k === i ? 0 : -1;
+      });
+      legendas.forEach((l, k) => l.classList.toggle('ativo', k === i));
+      atual.textContent = String(i + 1).padStart(2, '0');
+    };
+    const auto = () => {
+      if (reduz) return;
+      clearInterval(timer);
+      timer = window.setInterval(() => ir(i + 1), 6000);
+    };
+    root.querySelector('[data-prev]')?.addEventListener('click', () => { ir(i - 1); auto(); });
+    root.querySelector('[data-next]')?.addEventListener('click', () => { ir(i + 1); auto(); });
+    root.addEventListener('mouseenter', () => clearInterval(timer));
+    root.addEventListener('mouseleave', auto);
+    auto();
+  }
+</script>
+
+<style>
+  .hero { padding-top: 72px; padding-bottom: 80px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center; }
+  .hero-txt { flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+  .hero h1 { font-size: clamp(40px, 5vw, 68px); line-height: 1.02; }
+  .hero-sub { font-size: 19px; line-height: 1.55; color: var(--texto-claro); max-width: 520px; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-midia { flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .hero-img { position: relative; height: 560px; background: var(--tinta-media); overflow: hidden; }
+  .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+  .slide.ativo { opacity: 1; pointer-events: auto; }
+  .hero-legenda { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 14px; color: var(--texto-claro); }
+  .legendas { display: grid; min-width: 0; }
+  .legenda { grid-area: 1 / 1; visibility: hidden; }
+  .legenda.ativo { visibility: visible; }
+  .legenda strong { color: #fff; font-weight: 600; }
+  .ctrl { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .ctrl button { width: 44px; height: 44px; background: none; border: 1px solid var(--linha-escura); color: #fff; cursor: pointer; border-radius: var(--raio); font-size: 16px; }
+  .ctrl button:hover { border-color: var(--acento-claro); color: var(--acento-claro); }
+  .contador { font-family: var(--titulo); padding: 0 8px; }
+
+  .numeros-sec { border-bottom: 1px solid var(--linha); }
+  .numeros { padding-top: 40px; padding-bottom: 40px; display: flex; flex-wrap: wrap; gap: 32px; }
+  .numeros > div { flex: 1 1 200px; }
+  .num { font-family: var(--titulo); font-size: 40px; font-weight: 600; }
+  .num-l { font-size: 14px; color: var(--texto-2); margin-top: 6px; }
+
+  .sec-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 40px; }
+  .gap12 { gap: 12px; max-width: 620px; }
+  .grade { display: flex; flex-wrap: wrap; gap: 24px; }
+
+  .duas { display: flex; flex-wrap: wrap; gap: 56px; align-items: stretch; }
+  .duas-img { flex: 1 1 460px; min-height: 480px; min-width: 0; }
+  .duas-txt { flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 32px; justify-content: center; }
+  .gap24 { gap: 24px; justify-content: flex-start; }
+  .pilares { display: flex; flex-direction: column; }
+  .pilar { display: flex; gap: 24px; padding: 24px 0; border-top: 1px solid var(--linha); }
+  .pilar:last-child { border-bottom: 1px solid var(--linha); }
+  .pilar-n { font-family: var(--titulo); font-size: 15px; font-weight: 600; color: var(--verde); }
+  .pilar h3 { font-size: 22px; }
+  .pilar p { font-size: 16px; line-height: 1.6; color: var(--texto-2); margin-top: 8px; }
+  .txt-grande { font-size: 18px; line-height: 1.65; color: var(--texto); }
+  .foto-inst { flex: 1 1 460px; min-height: 420px; }
+
+  .contato { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
+  .contato h2 { font-size: 48px; line-height: 1.08; max-width: 760px; }
+  .contato .lead { max-width: 560px; }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 48px; padding-bottom: 56px; gap: 40px; }
+    .hero-img { height: 340px; }
+    .duas-img { min-height: 320px; }
+    .foto-inst { min-height: 280px; }
+    .contato h2 { font-size: 34px; }
+    .num { font-size: 32px; }
+  }
+</style>

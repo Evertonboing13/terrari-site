@@ -1,0 +1,20 @@
+---
+import { u } from '../config';
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Página não encontrada">
+  <section class="wrap sec nf">
+    <p class="rotulo">Erro 404</p>
+    <h1>Esta página não existe.</h1>
+    <p class="lead">O endereço pode ter mudado. Veja os empreendimentos ou volte para a página inicial.</p>
+    <div class="btns">
+      <a href={u('/empreendimentos')} class="btn btn-tinta">Ver empreendimentos</a>
+      <a href={u('/')} class="btn btn-ghost-escuro">Página inicial</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { display: flex; flex-direction: column; gap: 24px; min-height: 50vh; }
+  h1 { font-size: 48px; line-height: 1.08; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+</style>

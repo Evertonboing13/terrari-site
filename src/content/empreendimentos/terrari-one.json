@@ -1,0 +1,130 @@
+{
+  "nome": "Terrari One",
+  "ordem": 1,
+  "fase": "lancamento",
+  "local": {
+    "bairro": "Bom Retiro",
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": "Rua Avaí, Bom Retiro, Joinville/SC",
+    "referencias": [
+      "Universidades",
+      "Shopping",
+      "Escola",
+      "Mercado",
+      "Polo industrial",
+      "Aeroporto"
+    ]
+  },
+  "ficha": {
+    "area": "30 m²",
+    "tipologia": "Studio",
+    "unidades": "18 unidades",
+    "entrega": "Nov/2030",
+    "registro": null
+  },
+  "conceito": "Praticidade, conforto e inteligência em cada detalhe.",
+  "apresentacao": [
+    "O Terrari One é um condomínio de studios no Bom Retiro, em Joinville, para quem procura conforto sem perder as vantagens da praticidade. São 18 apartamentos de 30 m² com plantas inteligentes, living integrado, sacada com churrasqueira e vaga individual para cada unidade. Os seis apartamentos garden do térreo contam ainda com área externa privativa de 10 a 16 m².",
+    "A localização é estratégica, perto de universidades, shopping, escola, mercado, do polo industrial e do aeroporto. No condomínio, espaço de convivência, espaço pet, mini mercado e bicicletário facilitam o dia a dia, com privacidade, funcionalidade e baixo custo condominial."
+  ],
+  "diferenciais": [
+    "Vagas individuais",
+    "Espaço de convivência",
+    "Espaço pet",
+    "Mini mercado",
+    "Bicicletário",
+    "Baixo custo condominial"
+  ],
+  "capa": {
+    "src": "../../assets/empreendimentos/terrari-one/fachada-tarde.jpg",
+    "alt": "Fachada do Terrari One ao entardecer, com o letreiro iluminado e o estacionamento em frente"
+  },
+  "galeria": [
+    {
+      "src": "../../assets/empreendimentos/terrari-one/living.jpg",
+      "alt": "Living integrado com cozinha, mesa de jantar e painel de TV"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/quarto-2.jpg",
+      "alt": "Quarto com cama de casal, painel ripado e janela ampla"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/banheiro.jpg",
+      "alt": "Banheiro com box de vidro e bancada escura"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/lateral.jpg",
+      "alt": "Fachada lateral do Terrari One ao entardecer"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/fachada-dia.jpg",
+      "alt": "Fachada do Terrari One durante o dia"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/quarto.jpg",
+      "alt": "Quarto com cama de casal, bancada de estudo e iluminação indireta"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/churrasqueira.jpg",
+      "alt": "Churrasqueira na sacada do apartamento"
+    },
+    {
+      "src": "../../assets/empreendimentos/terrari-one/lateral-dia.jpg",
+      "alt": "Fachada lateral do Terrari One durante o dia"
+    }
+  ],
+  "areasComuns": [
+    {
+      "nome": "Espaço de Convivência",
+      "src": "../../assets/empreendimentos/terrari-one/espaco-convivencia-dia.jpg",
+      "alt": "Espaço de convivência ao ar livre com mesa, ombrelone e gramado"
+    },
+    {
+      "nome": "Espaço Pet",
+      "src": "../../assets/empreendimentos/terrari-one/espaco-pet-dia.jpg",
+      "alt": "Espaço pet com gramado, casinha e obstáculos"
+    },
+    {
+      "nome": "Mini Mercado",
+      "src": "../../assets/empreendimentos/terrari-one/mini-mercado.jpg",
+      "alt": "Mini mercado com prateleiras e geladeira de bebidas"
+    },
+    {
+      "nome": "Guarita",
+      "src": "../../assets/empreendimentos/terrari-one/guarita-dia.jpg",
+      "alt": "Entrada do condomínio com guarita e portão"
+    }
+  ],
+  "plantas": [
+    {
+      "titulo": "Planta da unidade",
+      "src": "../../assets/empreendimentos/terrari-one/planta-unidade.jpg",
+      "alt": "Planta humanizada do studio: sacada de 1,69 m², living de 11,66 m², quarto de 9,09 m² e banheiro de 2,70 m²"
+    },
+    {
+      "titulo": "Térreo · Gardens",
+      "src": "../../assets/empreendimentos/terrari-one/implantacao-terreo.jpg",
+      "alt": "Planta do térreo com os apartamentos 01 a 06, gardens privativos, espaço de convivência e espaço pet"
+    },
+    {
+      "titulo": "1º andar",
+      "src": "../../assets/empreendimentos/terrari-one/planta-1-andar.jpg",
+      "alt": "Planta do primeiro andar com os apartamentos 101 a 106"
+    },
+    {
+      "titulo": "2º andar",
+      "src": "../../assets/empreendimentos/terrari-one/planta-2-andar.jpg",
+      "alt": "Planta do segundo andar com os apartamentos 201 a 206"
+    },
+    {
+      "titulo": "Vagas",
+      "src": "../../assets/empreendimentos/terrari-one/vagas.jpg",
+      "alt": "Implantação com a disposição das vagas de estacionamento"
+    }
+  ],
+  "video": null,
+  "book": "/books/terrari-one-book.pdf",
+  "mapa": "Rua Avaí, Bom Retiro, Joinville - SC",
+  "obra": null
+}

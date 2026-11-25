@@ -1,0 +1,73 @@
+{
+  "nome": "Residencial Argos",
+  "ordem": 4,
+  "fase": "em-obras",
+  "local": {
+    "bairro": null,
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": null,
+    "referencias": []
+  },
+  "ficha": {
+    "area": null,
+    "tipologia": "2 dormitórios",
+    "unidades": "4 sobrados",
+    "entrega": "Dez/2026",
+    "registro": null
+  },
+  "conceito": null,
+  "apresentacao": [],
+  "capa": {
+    "src": "../../assets/empreendimentos/residencial-argos/fachada.jpg",
+    "alt": "Fachada do Residencial Argos, sobrados geminados com muro e portões frontais"
+  },
+  "galeria": [
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/fachada-fundos.jpg",
+      "alt": "Fachada dos fundos dos sobrados com quintais"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/externa-01.jpg",
+      "alt": "Perspectiva da fachada frontal do Residencial Argos"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/externa-02.jpg",
+      "alt": "Detalhe da entrada de um sobrado com revestimento amadeirado"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/externa-03.jpg",
+      "alt": "Perspectiva da rua com os portões do Residencial Argos"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/interior.jpg",
+      "alt": "Ambiente interno com piso amadeirado"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/quarto.jpg",
+      "alt": "Dormitório com piso amadeirado e janela"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/corredor.jpg",
+      "alt": "Corredor do pavimento superior com guarda-corpo da escada"
+    },
+    {
+      "src": "../../assets/empreendimentos/residencial-argos/lavabo-externo.jpg",
+      "alt": "Porta de vidro de acesso ao quintal e lavabo"
+    }
+  ],
+  "plantas": [
+    {
+      "titulo": "Implantação",
+      "src": "../../assets/empreendimentos/residencial-argos/implantacao.jpg",
+      "alt": "Implantação humanizada com os quatro sobrados, vagas de garagem e quintais"
+    },
+    {
+      "titulo": "Planta da unidade tipo",
+      "src": "../../assets/empreendimentos/residencial-argos/planta-unidade.jpg",
+      "alt": "Planta do sobrado: térreo com sala, cozinha e lavabo; pavimento superior com dois dormitórios e banheiro"
+    }
+  ],
+  "mapa": null,
+  "obra": 90
+}

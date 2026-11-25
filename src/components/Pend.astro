@@ -1,0 +1,6 @@
+---
+// Mostra o valor quando existe; senão, um marcador de pendência.
+interface Props { valor?: string | null; label: string }
+const { valor, label } = Astro.props;
+---
+{valor ? <Fragment>{valor}</Fragment> : <span class="pend" title="Dado pendente">{`[${label}]`}</span>}

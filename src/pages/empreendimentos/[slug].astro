@@ -1,0 +1,381 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Pend from '../../components/Pend.astro';
+import FormInteresse from '../../components/FormInteresse.astro';
+import Andamento from '../../components/Andamento.astro';
+import CardEmpreendimento from '../../components/CardEmpreendimento.astro';
+import { listarEmpreendimentos, faseLabel, localTexto, rotuloEntrega, type Emp } from '../../lib/empreendimentos';
+import { TABELA_PRO_URL, SITE, CONTATO, whatsappLink, u } from '../../config';
+
+export async function getStaticPaths() {
+  const emps = await listarEmpreendimentos();
+  return emps.map((emp) => ({ params: { slug: emp.id }, props: { emp } }));
+}
+interface Props { emp: Emp }
+const { emp } = Astro.props;
+const d = emp.data;
+const fase = faseLabel(emp);
+const local = localTexto(emp);
+const mostraRegistro = d.fase !== 'entregue';
+const book = d.book ? u(d.book) : null;
+const emObras = d.fase === 'em-obras' && d.obra != null;
+const msgWa = `Olá! Tenho interesse no ${d.nome}.`;
+// Outros empreendimentos: prioriza a mesma fase, depois o restante
+const todos = await listarEmpreendimentos();
+const outros = todos
+  .filter((e) => e.id !== emp.id)
+  .sort((a, b) => Number(b.data.fase === d.fase) - Number(a.data.fase === d.fase))
+  .slice(0, 3);
+
+// Versões grandes para o visualizador (lightbox)
+const ampliar = async (src: ImageMetadata) => (await getImage({ src, width: 2000, format: 'webp' })).src;
+const galeria = await Promise.all(d.galeria.map(async (g) => ({ ...g, grande: await ampliar(g.src) })));
+const plantas = await Promise.all(d.plantas.map(async (p) => ({ ...p, grande: await ampliar(p.src) })));
+
+const youtubeId = d.video?.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/)?.[1];
+const videoEmbed = youtubeId
+  ? `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`
+  : d.video?.includes('vimeo.com')
+    ? `https://player.vimeo.com/video/${d.video.split('/').pop()}?autoplay=1`
+    : d.video;
+
+const descricao = d.apresentacao[0]?.slice(0, 155) ?? `${d.nome}, empreendimento da Terrari Empreendimentos.`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Residence',
+  name: d.nome,
+  description: descricao,
+  ...(d.local.endereco && {
+    address: { '@type': 'PostalAddress', streetAddress: d.local.endereco, addressLocality: d.local.cidade, addressRegion: d.local.uf, addressCountry: 'BR' },
+  }),
+  brand: { '@type': 'Organization', name: SITE.nome },
+};
+---
+<Base titulo={d.nome} descricao={descricao} imagem={d.capa.src} jsonLd={jsonLd} waMensagem={msgWa} bodyClass="tem-barra-cta">
+  <section class="bg-tinta">
+    <div class="wrap cab">
+      <p class="trilha"><a href={u('/empreendimentos')}>Empreendimentos</a> / <span aria-current="page">{d.nome}</span></p>
+      <div class="cab-linha">
+        <div class="cab-txt">
+          <span class="selo-fase"><Pend valor={fase} label="STATUS" /></span>
+          <h1>{d.nome}</h1>
+          <p class="cab-local"><Pend valor={local.bairro} label="BAIRRO" /> · <Pend valor={local.cidade} label="CIDADE/UF" /></p>
+        </div>
+        <div class="btns">
+          <a href="#interesse" class="btn btn-acento">Tenho interesse</a>
+          {book && <a href={book} class="btn btn-ghost" download>Baixar o book</a>}
+        </div>
+      </div>
+      <div class="cab-img">
+        <Image src={d.capa.src} alt={d.capa.alt} widths={[800, 1280, 1920, 2400]} sizes="(max-width: 1280px) 100vw, 1216px" class="img-cover" loading="eager" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-branco ficha-sec">
+    <div class="wrap ficha">
+      <div><p class="ficha-v"><Pend valor={d.ficha.area} label="XX a XX m²" /></p><p class="ficha-l">Área privativa</p></div>
+      <div><p class="ficha-v"><Pend valor={d.ficha.tipologia} label="X dorm." /></p><p class="ficha-l">Tipologias</p></div>
+      <div><p class="ficha-v"><Pend valor={d.ficha.unidades} label="XX unidades" /></p><p class="ficha-l">No empreendimento</p></div>
+      <div><p class="ficha-v"><Pend valor={d.ficha.entrega} label="MÊS/ANO" /></p><p class="ficha-l">{rotuloEntrega(emp)}</p></div>
+      {mostraRegistro && <div><p class="ficha-v"><Pend valor={d.ficha.registro} label="R.I. Nº" /></p><p class="ficha-l">Registro de incorporação</p></div>}
+    </div>
+    {emObras && <div class="wrap ficha-obra"><Andamento percentual={d.obra!} /></div>}
+  </section>
+
+  <section class="wrap sec apres">
+    <div class="apres-tit">
+      <p class="rotulo">O empreendimento</p>
+      <h2 class="h-sec"><Pend valor={d.conceito} label={`CONCEITO DO ${d.nome.toUpperCase()} EM UMA FRASE`} /></h2>
+    </div>
+    <div class="apres-txt">
+      {d.apresentacao.length > 0
+        ? d.apresentacao.map((p) => <p>{p}</p>)
+        : <p><span class="pend">[TEXTO DE APRESENTAÇÃO DO EMPREENDIMENTO: proposta, público, diferenciais de projeto e de localização]</span></p>}
+      {d.diferenciais.length > 0 && (
+        <ul class="difs">{d.diferenciais.map((x) => <li>{x}</li>)}</ul>
+      )}
+    </div>
+  </section>
+
+  {galeria.length > 0 && (
+    <section class="bg-branco">
+      <div class="wrap sec col gap40">
+        <div class="sec-topo">
+          <h2 class="h-sec">Galeria</h2>
+          <p class="muted fs14">Imagens meramente ilustrativas.</p>
+        </div>
+        <div class="galeria">
+          {galeria.map((g, i) => (
+            <button type="button" class:list={['gal-item', i === 0 ? 'g-0' : i === 1 ? 'g-1' : 'g-n']} data-ampliar={g.grande} data-alt={g.alt} aria-label={`Ampliar imagem: ${g.alt}`}>
+              <Image src={g.src} alt={g.alt} widths={[480, 800, 1200]} sizes={i === 0 ? '(max-width: 900px) 100vw, 800px' : '(max-width: 900px) 100vw, 420px'} class="img-cover" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {d.areasComuns.length > 0 && (
+    <section class="wrap sec col gap40">
+      <div class="col gap12">
+        <p class="rotulo">Áreas comuns</p>
+        <h2 class="h-sec">Estrutura para o dia a dia</h2>
+      </div>
+      <div class="areas">
+        {d.areasComuns.map((a) => (
+          <div class="area">
+            <div class="area-img"><Image src={a.src} alt={a.alt} widths={[400, 640]} sizes="(max-width: 640px) 100vw, 300px" class="img-cover" loading="lazy" /></div>
+            <h3>{a.nome}</h3>
+          </div>
+        ))}
+      </div>
+      <p class="muted fs14">Imagens meramente ilustrativas.</p>
+    </section>
+  )}
+
+  {d.video && (
+    <section class="bg-tinta">
+      <div class="wrap sec video-sec">
+        <div class="video-txt">
+          <p class="rotulo">Vídeo</p>
+          <h2>Conheça o {d.nome} por dentro</h2>
+        </div>
+        <div class="video" data-video={videoEmbed}>
+          <Image src={d.capa.src} alt="" widths={[800, 1200]} sizes="(max-width: 900px) 100vw, 780px" class="img-cover" loading="lazy" />
+          <button type="button" class="play" aria-label={`Reproduzir vídeo do ${d.nome}`}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z" /></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section id="book" class="bg-branco">
+    <div class="wrap sec duas">
+      {(plantas.length > 0 || d.book) && (
+        <div class="duas-col">
+          <h2 class="h-sec">Plantas</h2>
+          {plantas.length > 0 && (
+            <div class="plantas" data-plantas>
+              {plantas.length > 1 && (
+                <div class="plantas-tabs" role="tablist" aria-label="Plantas">
+                  {plantas.map((p, i) => (
+                    <button type="button" role="tab" id={`tab-planta-${i}`} aria-controls={`planta-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{p.titulo}</button>
+                  ))}
+                </div>
+              )}
+              {plantas.map((p, i) => (
+                <div role={plantas.length > 1 ? 'tabpanel' : undefined} id={`planta-${i}`} aria-labelledby={plantas.length > 1 ? `tab-planta-${i}` : undefined} hidden={i !== 0} class="planta">
+                  <button type="button" class="planta-btn" data-ampliar={p.grande} data-alt={p.alt} aria-label={`Ampliar: ${p.titulo}`}>
+                    <Image src={p.src} alt={p.alt} widths={[600, 1000, 1400]} sizes="(max-width: 1000px) 100vw, 600px" class="planta-img" loading="lazy" />
+                  </button>
+                </div>
+              ))}
+              <p class="muted fs14">Plantas ilustrativas. Clique para ampliar.</p>
+            </div>
+          )}
+          {book && <a href={book} class="btn btn-tinta auto" download>Baixar o book completo (PDF)</a>}
+        </div>
+      )}
+      <div class="duas-col">
+        <h2 class="h-sec">Localização</h2>
+        {d.mapa ? (
+          <div class="mapa">
+            <iframe
+              title={`Mapa: ${d.nome}`}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(d.mapa)}&z=15&output=embed`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        ) : (
+          <div class="ph mapa">[MAPA: endereço do empreendimento]</div>
+        )}
+        <p class="muted end">
+          <Pend valor={d.local.endereco} label="ENDEREÇO COMPLETO" />
+          {d.local.referencias.length > 0 && <><br />Próximo a: {d.local.referencias.join(', ').toLowerCase().replace(/^./, (c) => c.toUpperCase())}.</>}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="interesse" class="wrap sec duas">
+    <div class="duas-col int-txt">
+      <h2 class="h-sec">Quer saber mais sobre o {d.nome}?</h2>
+      <p class="lead">Deixe seu contato e nosso time retorna com valores, disponibilidade e condições.</p>
+      <p class="corretor">É corretor? <a href={TABELA_PRO_URL ?? '#corretores'} target={TABELA_PRO_URL ? '_blank' : undefined} rel="noopener">Acesse o Tabela Pro ↗</a></p>
+    </div>
+    <FormInteresse empreendimento={d.nome} />
+  </section>
+
+  <section class="bg-branco">
+    <div class="wrap sec col gap40">
+      <div class="sec-topo">
+        <div class="col gap12">
+          <p class="rotulo">Portfólio</p>
+          <h2 class="h-sec">Conheça também</h2>
+        </div>
+        <a href={u('/empreendimentos')} class="link-seta">Ver todos os empreendimentos →</a>
+      </div>
+      <div class="outros">
+        {outros.map((e) => <CardEmpreendimento emp={e} />)}
+      </div>
+    </div>
+  </section>
+
+  <div class="barra-cta" aria-label="Ações rápidas">
+    <a href="#interesse" class="btn btn-acento">Tenho interesse</a>
+    <a href={whatsappLink(msgWa)} target={CONTATO.whatsapp ? '_blank' : undefined} rel="noopener" class="btn btn-ghost">WhatsApp</a>
+  </div>
+
+  <dialog class="lightbox" data-lightbox aria-label="Imagem ampliada">
+    <button type="button" class="fechar" data-fechar aria-label="Fechar">✕</button>
+    <img alt="" data-lightbox-img />
+  </dialog>
+</Base>
+
+<script>
+  // Lightbox
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]')!;
+  const img = dlg.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+  document.querySelectorAll<HTMLElement>('[data-ampliar]').forEach((b) =>
+    b.addEventListener('click', () => {
+      img.src = b.dataset.ampliar!;
+      img.alt = b.dataset.alt ?? '';
+      dlg.showModal();
+    }),
+  );
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg || (e.target as HTMLElement).closest('[data-fechar]')) dlg.close();
+  });
+
+  // Abas das plantas
+  document.querySelectorAll<HTMLElement>('[data-plantas]').forEach((box) => {
+    const tabs = [...box.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const panels = [...box.querySelectorAll<HTMLElement>('.planta')];
+    const sel = (i: number) => {
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      panels.forEach((p, k) => (p.hidden = k !== i));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => sel(i));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        const n = (i + d + tabs.length) % tabs.length;
+        sel(n);
+        tabs[n].focus();
+      });
+    });
+  });
+
+  // Vídeo: só carrega o player ao clicar
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((box) => {
+    box.querySelector('.play')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = box.dataset.video!;
+      f.title = 'Vídeo do empreendimento';
+      f.allow = 'autoplay; fullscreen; picture-in-picture';
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+    });
+  });
+</script>
+
+<style>
+  .cab { padding-top: 40px; display: flex; flex-direction: column; gap: 32px; }
+  .trilha { font-size: 14px; color: var(--texto-claro); }
+  .trilha a { color: var(--texto-claro); }
+  .trilha a:hover { color: #fff; }
+  .cab-linha { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .cab-txt { display: flex; flex-direction: column; gap: 16px; }
+  .selo-fase { align-self: flex-start; background: var(--acento); color: var(--ink); font-size: 12px; font-weight: 600; padding: 6px 10px; letter-spacing: 0.04em; }
+  .cab h1 { font-size: clamp(48px, 7vw, 88px); line-height: 1; }
+  .cab-local { font-size: 19px; color: var(--texto-claro); }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .cab-img { height: 620px; background: var(--tinta-media); }
+
+  .ficha-sec { border-bottom: 1px solid var(--linha); }
+  .ficha { padding-top: 36px; padding-bottom: 36px; display: flex; flex-wrap: wrap; gap: 28px; }
+  .ficha > div { flex: 1 1 180px; }
+  .ficha-v { font-family: var(--titulo); font-size: 28px; font-weight: 600; }
+  .ficha-l { font-size: 14px; color: var(--texto-2); margin-top: 4px; }
+  .ficha-obra { padding-bottom: 32px; max-width: calc(var(--max)); }
+  .outros { display: flex; flex-wrap: wrap; gap: 24px; }
+  .outros :global(.card) { background: var(--fundo); }
+  .barra-cta { display: none; }
+  @media (max-width: 760px) {
+    .barra-cta { display: flex; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--tinta); border-top: 1px solid var(--linha-escura); }
+    .barra-cta .btn { flex: 1; padding: 12px 8px; font-size: 15px; white-space: nowrap; }
+    :global(body.tem-barra-cta) { padding-bottom: 72px; }
+  }
+
+  .apres { display: flex; flex-wrap: wrap; gap: 56px; }
+  .apres-tit { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .apres-txt { flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 20px; font-size: 18px; line-height: 1.7; color: var(--texto); }
+  .difs { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .difs li { font-size: 14px; font-weight: 600; line-height: 1; padding: 10px 14px; border: 1px solid var(--linha-2); color: var(--verde); }
+
+  .gap40 { gap: 40px; }
+  .gap12 { gap: 12px; max-width: 640px; }
+  .fs14 { font-size: 14px; }
+  .sec-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
+
+  .galeria { display: flex; flex-wrap: wrap; gap: 16px; }
+  .gal-item { padding: 0; border: 0; background: var(--placeholder); cursor: zoom-in; overflow: hidden; min-width: 0; }
+  .gal-item :global(img) { transition: transform 0.5s ease; }
+  .gal-item:hover :global(img) { transform: scale(1.03); }
+  .g-0 { flex: 2 1 560px; height: 440px; }
+  .g-1 { flex: 1 1 300px; height: 440px; }
+  .g-n { flex: 1 1 300px; height: 320px; }
+
+  .areas { display: flex; flex-wrap: wrap; gap: 24px; }
+  .area { flex: 1 1 220px; min-width: 0; background: var(--superficie); display: flex; flex-direction: column; }
+  .area-img { height: 220px; }
+  .area h3 { font-size: 20px; padding: 20px; }
+
+  .video-sec { display: flex; flex-wrap: wrap; gap: 48px; align-items: center; }
+  .video-txt { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .video-txt h2 { font-size: 40px; line-height: 1.1; }
+  .video { flex: 2 1 560px; min-width: 0; height: 440px; position: relative; background: var(--tinta-media); }
+  .video :global(iframe) { width: 100%; height: 100%; border: 0; }
+  .play { position: absolute; top: 50%; left: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%; background: var(--acento); color: var(--ink); border: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .play:hover { transform: scale(1.06); }
+
+  .duas { display: flex; flex-wrap: wrap; gap: 56px; }
+  .duas-col { flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .auto { align-self: flex-start; }
+  .plantas { display: flex; flex-direction: column; gap: 12px; }
+  .plantas-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .plantas-tabs button { font: 600 14px var(--corpo); min-height: 44px; padding: 10px 14px; background: var(--superficie); color: var(--ink); border: 1px solid var(--linha-2); border-radius: var(--raio); cursor: pointer; }
+  .plantas-tabs button[aria-selected='true'] { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+  .planta-btn { display: block; width: 100%; padding: 0; border: 1px solid var(--linha); background: var(--fundo); cursor: zoom-in; }
+  .planta-btn :global(.planta-img) { width: 100%; height: 420px; object-fit: contain; }
+  .mapa { height: 420px; background: var(--placeholder); }
+  .mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .end { font-size: 16px; line-height: 1.6; }
+
+  .int-txt { flex-basis: 400px; gap: 20px; }
+  .corretor { font-size: 16px; line-height: 1.6; color: var(--texto-2); border-top: 1px solid var(--linha-2); padding-top: 20px; }
+  .corretor a { font-weight: 600; }
+
+  .lightbox { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 94vh; }
+  .lightbox::backdrop { background: rgba(10, 31, 25, 0.92); }
+  .lightbox img { max-width: 96vw; max-height: 94vh; object-fit: contain; }
+  .fechar { position: fixed; top: 16px; right: 16px; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--acento); color: var(--ink); font-size: 18px; cursor: pointer; }
+
+  @media (max-width: 640px) {
+    .cab-img { height: 320px; }
+    .ficha-v { font-size: 22px; }
+    .g-0, .g-1, .g-n { height: 260px; }
+    .video { height: 240px; }
+    .video-txt h2 { font-size: 30px; }
+    .planta-btn :global(.planta-img) { height: 300px; }
+    .mapa { height: 300px; }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import { TABELA_PRO_URL } from '../config';
+---
+<section id="corretores" class="bg-tinta">
+  <div class="wrap faixa">
+    <div class="faixa-txt">
+      <p class="rotulo">Área do corretor</p>
+      <h2>Corretor parceiro, sua tabela está no Tabela Pro.</h2>
+      <p class="lead">Tabelas de vendas, disponibilidade atualizada e materiais de todos os empreendimentos Terrari em um só lugar.</p>
+    </div>
+    <a href={TABELA_PRO_URL ?? '#corretores'} target={TABELA_PRO_URL ? '_blank' : undefined} rel="noopener" class="btn btn-acento btn-lg">Acessar o Tabela Pro ↗</a>
+  </div>
+</section>
+
+<style>
+  .faixa { padding-top: 80px; padding-bottom: 80px; display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: space-between; }
+  .faixa-txt { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .faixa h2 { font-size: 40px; line-height: 1.1; }
+  .faixa .lead { max-width: 600px; }
+  @media (max-width: 640px) { .faixa h2 { font-size: 30px; } .faixa { padding-top: 64px; padding-bottom: 64px; } }
+</style>

@@ -1,0 +1,57 @@
+---
+import { CONTATO, TABELA_PRO_URL, whatsappLink, u } from '../config';
+import Pend from './Pend.astro';
+const redes = [
+  { label: 'Instagram', url: CONTATO.instagram },
+  { label: 'Facebook', url: CONTATO.facebook },
+  { label: 'YouTube', url: CONTATO.youtube },
+];
+---
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <div class="ftr-cols">
+      <div class="ftr-marca">
+        <p class="ftr-logo">TERRARI</p>
+        <p>Construindo o futuro com inteligência e qualidade. Empreendimentos modernos para viver e investir.</p>
+      </div>
+      <div class="ftr-col">
+        <p class="ftr-tit">Site</p>
+        <a href={u('/a-terrari')}>A Terrari</a>
+        <a href={u('/empreendimentos')}>Empreendimentos</a>
+        <a href={TABELA_PRO_URL ?? '#corretores'} target={TABELA_PRO_URL ? '_blank' : undefined} rel="noopener" class="ftr-acento">Área do corretor · Tabela Pro ↗</a>
+      </div>
+      <div class="ftr-col">
+        <p class="ftr-tit">Contato</p>
+        <p>{CONTATO.whatsapp ? <a href={whatsappLink()} target="_blank" rel="noopener">{CONTATO.telefone ?? 'WhatsApp'}</a> : <Pend label="TELEFONE / WHATSAPP" />}</p>
+        <p>{CONTATO.email ? <a href={`mailto:${CONTATO.email}`}>{CONTATO.email}</a> : <Pend label="E-MAIL COMERCIAL" />}</p>
+        <p><Pend valor={CONTATO.endereco} label="ENDEREÇO DA SEDE" /></p>
+      </div>
+      <div class="ftr-col">
+        <p class="ftr-tit">Redes</p>
+        {redes.map((r) => (
+          <p>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.label}</a> : <Pend label={r.label.toUpperCase()} />}</p>
+        ))}
+      </div>
+    </div>
+    <div class="ftr-base">
+      <span>© {new Date().getFullYear()} Terrari Empreendimentos · CNPJ <Pend valor={CONTATO.cnpj} label="CNPJ" /></span>
+      <span><a href={u('/politica-de-privacidade')}>Política de privacidade</a> · <a href={u('/termos-de-uso')}>Termos de uso</a></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--tinta-profunda); color: var(--texto-claro); font-size: 15px; line-height: 1.6; }
+  .ftr-in { padding-top: 72px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 56px; }
+  .ftr-cols { display: flex; flex-wrap: wrap; gap: 48px; }
+  .ftr-marca { flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .ftr-marca p:last-child { max-width: 360px; }
+  .ftr-logo { font-family: var(--titulo); font-size: 26px; font-weight: 700; letter-spacing: 0.08em; color: #fff; }
+  .ftr-col { flex: 1 1 180px; display: flex; flex-direction: column; gap: 4px; }
+  .ftr-col > a, .ftr-col > p:not(.ftr-tit) { padding: 8px 0; }
+  .ftr-tit { margin-bottom: 8px !important; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; }
+  .ftr a { color: var(--texto-claro); text-decoration: none; }
+  .ftr a:hover { color: #fff; text-decoration: underline; }
+  .ftr a.ftr-acento { color: var(--acento-claro); }
+  .ftr-base { border-top: 1px solid var(--linha-escura); padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 13px; }
+</style>

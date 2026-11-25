@@ -1,0 +1,40 @@
+{
+  "nome": "Residencial Artemis",
+  "ordem": 3,
+  "fase": "em-obras",
+  "local": {
+    "bairro": null,
+    "cidade": "Joinville",
+    "uf": "SC",
+    "endereco": null,
+    "referencias": []
+  },
+  "ficha": {
+    "area": null,
+    "tipologia": "2 dormitórios",
+    "unidades": "4 sobrados",
+    "entrega": "Dez/2027",
+    "registro": null
+  },
+  "conceito": null,
+  "apresentacao": [],
+  "capa": {
+    "src": "../../assets/empreendimentos/residencial-artemis/fachada.jpg",
+    "alt": "Fachada do Residencial Artemis, sobrados geminados com portões e revestimento amadeirado"
+  },
+  "galeria": [],
+  "plantas": [
+    {
+      "titulo": "Implantação",
+      "src": "../../assets/empreendimentos/residencial-artemis/implantacao.jpg",
+      "alt": "Implantação humanizada com os quatro sobrados, vagas de garagem e quintais"
+    },
+    {
+      "titulo": "Planta da unidade",
+      "src": "../../assets/empreendimentos/residencial-artemis/planta-unidade.jpg",
+      "alt": "Planta do sobrado: térreo com sala, cozinha e lavabo; pavimento superior com dois dormitórios e banheiro"
+    }
+  ],
+  "mapa": null,
+  "obra": 20
+}
