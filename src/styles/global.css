@@ -1,24 +1,25 @@
 :root {
-  --tinta: #0F2A22;
-  --tinta-profunda: #0A1F19;
-  --tinta-media: #1C3B31;
-  --ink: #0F2A22;
-  --terracota: #D9B45B;
-  --acento: #D9B45B;
-  --acento-escuro: #E6C576;
-  --acento-claro: #D9B45B;
-  --verde: #1F5A47;
-  --fundo: #F3F5F4;
+  /* Paleta oficial Terrari: Azul Terrari #102D38, Areia Mineral #E9E5DC, Concreto #A9B1B0, Grafite #252A2B */
+  --tinta: #102D38;          /* Azul Terrari: fundos escuros, header, botão primário em fundo claro */
+  --tinta-profunda: #252A2B; /* Grafite: rodapé */
+  --tinta-media: #1A3C49;    /* fundo de imagens em seções escuras */
+  --ink: #102D38;            /* títulos e texto forte */
+  --terracota: #A9B1B0;      /* Concreto: sublinhados e detalhes */
+  --acento: #E9E5DC;         /* Areia Mineral: botão e selos sobre fundo escuro */
+  --acento-escuro: #F6F3EC;  /* hover do botão areia */
+  --acento-claro: #A9B1B0;   /* Concreto: rótulos e links sobre fundo escuro */
+  --verde: #3E5A65;          /* links e rótulos em fundo claro (azul médio) */
+  --fundo: #F4F2ED;          /* areia clara */
   --superficie: #FFFFFF;
-  --texto: #33443D;
-  --texto-2: #4A5D55;
-  --texto-claro: #C9D6D0;
-  --linha: #DDE3E0;
-  --linha-2: #C9D2CD;
-  --linha-escura: #24443A;
-  --borda-input: #8A9A93;
-  --borda-ghost: #5E7A6F;
-  --placeholder: #D5DDD8;
+  --texto: #252A2B;          /* Grafite */
+  --texto-2: #5A6568;
+  --texto-claro: #C9D1D2;
+  --linha: #E9E5DC;
+  --linha-2: #D2CCBF;
+  --linha-escura: #24414D;
+  --borda-input: #8A9496;
+  --borda-ghost: #6A838E;
+  --placeholder: #E9E5DC;
   --raio: 2px;
   --max: 1280px;
   --gutter: 32px;

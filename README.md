@@ -47,7 +47,7 @@ Domínio próprio: em `astro.config.mjs` troque `site` pelo domínio e remova `b
 
 ## Identidade visual
 
-Segue o mockup: verde `#0F2A22`, dourado `#D9B45B`, Space Grotesk e Inter. Os tokens ficam em `src/styles/global.css`. O logo real, extraído do book, está em `public/logo/` caso a Terrari queira usá-lo no lugar do logo em texto.
+Paleta oficial Terrari: Azul Terrari `#102D38`, Areia Mineral `#E9E5DC`, Concreto `#A9B1B0` e Grafite `#252A2B`, com Space Grotesk e Inter. Os tokens ficam em `src/styles/global.css`. O logo oficial (do arquivo Logo.cdr) está em `public/logo/`, em branco e em azul, com fundo transparente.
 
 ## Formulário
 
